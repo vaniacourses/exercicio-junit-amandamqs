@@ -1,0 +1,133 @@
+package carrinho;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import produto.Produto;
+import produto.ProdutoNaoEncontradoException;
+
+@DisplayName("Classe para teste do Carrinho")
+public class CarrinhoTest {
+
+    private Carrinho carrinho;
+
+    @BeforeEach
+    public void inicializa() {
+        carrinho = new Carrinho();
+    }
+
+    @Test
+    public void testGetValorTotalSemItens() {
+        double valorTotal = carrinho.getValorTotal();
+        Assertions.assertEquals(0.0, valorTotal);
+    }
+
+    @Test
+    public void testGetValorTotalComItens() {
+        Produto produto1 = new Produto("Item 1", 10.0);
+        Produto produto2 = new Produto("Item 2", 20.0);
+        carrinho.addItem(produto1);
+        carrinho.addItem(produto2);
+
+        double valorTotal = carrinho.getValorTotal();
+        Assertions.assertEquals(30.0, valorTotal);
+    }
+
+    @Test
+    public void testAddItem() {
+        Produto produto = new Produto("Item", 15.0);
+        carrinho.addItem(produto);
+
+        int qtdeItems = carrinho.getQtdeItems();
+        Assertions.assertEquals(1, qtdeItems);
+    }
+
+    @Test
+    public void testRemoveItemExistente() throws ProdutoNaoEncontradoException {
+        Produto produto = new Produto("Item", 15.0);
+        carrinho.addItem(produto);
+
+        carrinho.removeItem(produto);
+
+        int qtdeItems = carrinho.getQtdeItems();
+        Assertions.assertEquals(0, qtdeItems);
+    }
+
+    @Test
+    public void testRemoveItemInexistente() {
+        Produto produto = new Produto("Item", 15.0);
+        Produto produtoNaoExistente = new Produto("Item Inexistente", 20.0);
+        carrinho.addItem(produto);
+
+        Assertions.assertThrows(ProdutoNaoEncontradoException.class, () -> {
+            carrinho.removeItem(produtoNaoExistente);
+        });
+    }
+
+    @Test
+    public void testEsvaziaCarrinho() {
+        Produto produto1 = new Produto("Item 1", 10.0);
+        Produto produto2 = new Produto("Item 2", 20.0);
+        carrinho.addItem(produto1);
+        carrinho.addItem(produto2);
+
+        carrinho.esvazia();
+
+        int qtdeItems = carrinho.getQtdeItems();
+        Assertions.assertEquals(0, qtdeItems);
+    }
+
+    @Test
+    public void testGetQtdeItemsSemItens() {
+        int qtdeItems = carrinho.getQtdeItems();
+        Assertions.assertEquals(0, qtdeItems);
+    }
+
+    @Test
+    public void testGetQtdeItemsComItens() {
+        Produto produto1 = new Produto("Item 1", 10.0);
+        Produto produto2 = new Produto("Item 2", 20.0);
+        carrinho.addItem(produto1);
+        carrinho.addItem(produto2);
+
+        int qtdeItems = carrinho.getQtdeItems();
+        Assertions.assertEquals(2, qtdeItems);
+    }
+
+    @Test
+    public void testRemoveItemExistenteValorTotalAtualizado() throws ProdutoNaoEncontradoException {
+        Produto produto1 = new Produto("Item 1", 10.0);
+        Produto produto2 = new Produto("Item 2", 20.0);
+        carrinho.addItem(produto1);
+        carrinho.addItem(produto2);
+
+        carrinho.removeItem(produto1);
+
+        double valorTotal = carrinho.getValorTotal();
+        Assertions.assertEquals(20.0, valorTotal);
+    }
+
+    @Test
+    public void testRemoveItemInexistenteLancaExcecao() {
+        Produto produto = new Produto("Item", 15.0);
+        Produto produtoNaoExistente = new Produto("Item Inexistente", 20.0);
+        carrinho.addItem(produto);
+
+        Assertions.assertThrows(ProdutoNaoEncontradoException.class, () -> {
+            carrinho.removeItem(produtoNaoExistente);
+        });
+    }
+
+    @Test
+    public void testEsvaziaCarrinhoValorTotalZero() {
+        Produto produto1 = new Produto("Item 1", 10.0);
+        Produto produto2 = new Produto("Item 2", 20.0);
+        carrinho.addItem(produto1);
+        carrinho.addItem(produto2);
+
+        carrinho.esvazia();
+
+        double valorTotal = carrinho.getValorTotal();
+        Assertions.assertEquals(0.0, valorTotal);
+    }
+}
